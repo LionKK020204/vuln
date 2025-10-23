@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% block content %}
+  <h3>{{ action }} Student</h3>
+  <form method="post" class="mt-3">
+    {% csrf_token %}
+    <input class="form-control mb-2" name="ma_sv" placeholder="Ma SV" value="{{ student.ma_sv|default:'' }}">
+    <input class="form-control mb-2" name="ten_sv" placeholder="Ten SV" value="{{ student.ten_sv|default:'' }}">
+    <input class="form-control mb-2" name="dia_chi" placeholder="Dia chi" value="{{ student.dia_chi|default:'' }}">
+    <input class="form-control mb-2" name="lop" placeholder="Lop" value="{{ student.lop|default:'' }}">
+    <button class="btn btn-primary">{{ action }}</button>
+    <a class="btn btn-secondary" href="{% url 'student_list' %}">Cancel</a>
+  </form>
+{% endblock %}
