@@ -25,10 +25,22 @@ def search(request):
     })
 
 # ---------------- Reflected XSS endpoint (vulnerable) ----------------
+# def echo(request):
+#     q = request.GET.get('q', '')
+#     # template uses {{ q|safe }} to demonstrate reflected XSS
+#     return render(request, 'echo.html', {'q': q})
+
 def echo(request):
     q = request.GET.get('q', '')
-    # template uses {{ q|safe }} to demonstrate reflected XSS
-    return render(request, 'echo.html', {'q': q})
+    if q:
+        # VULNERABLE (for testing only):
+        # Return raw HTML with user input inserted directly — Python-level reflected XSS sink.
+        return HttpResponse(f"<html><body>"
+                            f"<h3>Reflected (vulnerable)</h3>"
+                            f"<div>{q}</div>"
+                            f"</body></html>")
+    # If no param provided, show the form (so user can input in the UI)
+    return render(request, 'echo.html', {'q': ''})
 
 # ---------------- Simple vulnerable login ----------------
 def login_view(request):
