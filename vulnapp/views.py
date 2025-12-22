@@ -13,9 +13,7 @@ def dictfetchall(cursor):
     return [dict(zip([col[0] for col in desc], row)) for row in cursor.fetchall()]
 
 
-# ============================================================
-# PUBLIC SEARCH – SQL INJECTION
-# ============================================================
+
 def search(request):
     rows = []
     search_name = ''
@@ -28,6 +26,7 @@ def search(request):
         # LỖI:
         # - Nối trực tiếp input user vào câu SQL
         # - Attacker có thể chèn payload SQL (OR 1=1, UNION, ...)
+
         executed_query = (
             "SELECT id, ma_sv, ten_sv, dia_chi, lop "
             "FROM student WHERE ten_sv LIKE '%" + search_name + "%' "
@@ -36,7 +35,6 @@ def search(request):
         with connection.cursor() as cursor:
             cursor.execute(executed_query)
             rows = dictfetchall(cursor)
-
         # ---------------- FIX ----------------
         # CÁCH SỬA:
         # - Dùng placeholder (%s)
@@ -59,9 +57,7 @@ def search(request):
     })
 
 
-# ============================================================
-# REFLECTED XSS
-# ============================================================
+
 def echo(request):
     q = request.GET.get('q', '')
 
@@ -77,6 +73,8 @@ def echo(request):
             f"</body></html>"
         )
 
+    return render(request, 'echo.html', {'q': ''})
+
     # ---------------- FIX ----------------
     # CÁCH SỬA:
     # - Escape toàn bộ input trước khi render
@@ -85,12 +83,10 @@ def echo(request):
     # safe_q = escape(q)
     # return render(request, 'echo.html', {'q': safe_q})
 
-    return render(request, 'echo.html', {'q': ''})
 
 
-# ============================================================
-# FILE UPLOAD
-# ============================================================
+
+
 def upload_file(request):
     msg = ''
     file_url = ''
@@ -174,9 +170,6 @@ def logout_view(request):
     return redirect('search')
 
 
-# ============================================================
-# SIMPLE AUTH DECORATOR
-# ============================================================
 def require_login(fn):
     def wrapper(request, *args, **kwargs):
         # Chỉ check session cho demo
@@ -186,9 +179,7 @@ def require_login(fn):
     return wrapper
 
 
-# ============================================================
-# STUDENT LIST
-# ============================================================
+
 @require_login
 def student_list(request):
     executed_query = "SELECT id, ma_sv, ten_sv, dia_chi, lop FROM student ORDER BY id DESC"
@@ -203,9 +194,6 @@ def student_list(request):
     })
 
 
-# ============================================================
-# ADD STUDENT – SQL INJECTION
-# ============================================================
 @require_login
 def student_add(request):
     if request.method == 'POST':
@@ -241,9 +229,6 @@ def student_add(request):
     return render(request, 'student_form.html', {'action': 'Add', 'student': None})
 
 
-# ============================================================
-# EDIT STUDENT – SQL INJECTION
-# ============================================================
 @require_login
 def student_edit(request, id):
     with connection.cursor() as cursor:
@@ -290,9 +275,7 @@ def student_edit(request, id):
     return render(request, 'student_form.html', {'action': 'Edit', 'student': student})
 
 
-# ============================================================
-# DELETE STUDENT – SQL INJECTION
-# ============================================================
+
 @require_login
 def student_delete(request, id):
 
