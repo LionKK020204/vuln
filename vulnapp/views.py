@@ -27,28 +27,28 @@ def search(request):
         # - Nối trực tiếp input user vào câu SQL
         # - Attacker có thể chèn payload SQL (OR 1=1, UNION, ...)
 
-        executed_query = (
-            "SELECT id, ma_sv, ten_sv, dia_chi, lop "
-            "FROM student WHERE ten_sv LIKE '%" + search_name + "%' "
-            "ORDER BY id DESC"
-        )
-        with connection.cursor() as cursor:
-            cursor.execute(executed_query)
-            rows = dictfetchall(cursor)
+        # executed_query = (
+        #     "SELECT id, ma_sv, ten_sv, dia_chi, lop "
+        #     "FROM student WHERE ten_sv LIKE '%" + search_name + "%' "
+        #     "ORDER BY id DESC"
+        # )
+        # with connection.cursor() as cursor:
+        #     cursor.execute(executed_query)
+        #     rows = dictfetchall(cursor)
         # ---------------- FIX ----------------
         # CÁCH SỬA:
         # - Dùng placeholder (%s)
         # - DB driver tự escape input => chặn SQL Injection
         #
-        # executed_query = """
-        #     SELECT id, ma_sv, ten_sv, dia_chi, lop
-        #     FROM student
-        #     WHERE ten_sv LIKE %s
-        #     ORDER BY id DESC
-        # """
-        # with connection.cursor() as cursor:
-        #     cursor.execute(executed_query, [f"%{search_name}%"])
-        #     rows = dictfetchall(cursor)
+        executed_query = """
+            SELECT id, ma_sv, ten_sv, dia_chi, lop
+            FROM student
+            WHERE ten_sv LIKE %s
+            ORDER BY id DESC
+        """
+        with connection.cursor() as cursor:
+            cursor.execute(executed_query, [f"%{search_name}%"])
+            rows = dictfetchall(cursor)
 
     return render(request, 'search.html', {
         'rows': rows,
