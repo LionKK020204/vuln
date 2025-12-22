@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+{% block content %}
+<h3>File Upload Demo (VULNERABLE)</h3>
+
+<form method="post" enctype="multipart/form-data">
+  {% csrf_token %}
+  <input type="file" name="file" class="form-control">
+  <button class="btn btn-danger mt-2">Upload</button>
+</form>
+
+{% if msg %}
+  <div class="alert alert-warning mt-3">{{ msg }}</div>
+{% endif %}
+
+{% if file_url %}
+  <p>Uploaded file:</p>
+  <a href="{{ file_url }}" target="_blank">{{ file_url }}</a>
+{% endif %}
+
+<p class="text-muted mt-3">
+  Try upload: <code>.html</code>, <code>.js</code>, <code>.svg</code>
+</p>
+{% endblock %}
