@@ -65,23 +65,23 @@ def echo(request):
     # LỖI:
     # - Render trực tiếp input user ra HTML
     # - Trình duyệt sẽ thực thi <script>, <img onerror>, ...
-    if q:
-        return HttpResponse(
-            f"<html><body>"
-            f"<h3>Reflected (vulnerable)</h3>"
-            f"<div>{q}</div>"
-            f"</body></html>"
-        )
-
-    return render(request, 'echo.html', {'q': ''})
+    # if q:
+    #     return HttpResponse(
+    #         f"<html><body>"
+    #         f"<h3>Reflected (vulnerable)</h3>"
+    #         f"<div>{q}</div>"
+    #         f"</body></html>"
+    #     )
+    #
+    # return render(request, 'echo.html', {'q': ''})
 
     # ---------------- FIX ----------------
     # CÁCH SỬA:
     # - Escape toàn bộ input trước khi render
     # - Biến script thành text, không cho chạy
     #
-    # safe_q = escape(q)
-    # return render(request, 'echo.html', {'q': safe_q})
+    safe_q = escape(q)
+    return render(request, 'echo.html', {'q': safe_q})
 
 
 
